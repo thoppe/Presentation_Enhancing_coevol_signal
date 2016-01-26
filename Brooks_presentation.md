@@ -81,7 +81,9 @@ First reduce GREMLIN's tensor output:
 
 # $S_{N,N,21,21} \rightarrow S_{N,N,20,20} \rightarrow  G_{N,N} \rightarrow G^{APC}_{N,N} = g$
 
-APC correction is necessary!
+Drop information about gaps.
+Compute the Frobenius norm over each position.
+Apply "average product correlation" (necessary!)
 
 !! Show image of g map
 
