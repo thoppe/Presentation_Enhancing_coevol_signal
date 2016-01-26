@@ -23,7 +23,7 @@ push:
 	git push
 
 check:
-	find . -maxdepth 1 -name "*.md" -exec aspell check {} \;
+	find . -maxdepth 1 -name "*.md" -exec aspell -t check {} \;
 
 watch:
 	watch -n 1 make
