@@ -1,4 +1,4 @@
-title  = "CC"
+title  = "Enhancing the coevolutionary signal"
 author = "Travis Hoppe"
 
 target      = "Brooks_presentation.md"
