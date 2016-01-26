@@ -72,6 +72,10 @@ Regularization (and priors)
 prevent overfitting
 
 ====
+# Target dataset
+
+150 monomeric proteins $50<x<250$ residues
+====
 How good does it do?
 ====
 
