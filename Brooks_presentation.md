@@ -78,6 +78,12 @@ prevent overfitting
 ====
 How good does it do?
 ====
+GREMLIN model
+!(images/GREMLIN_only_Acc_Pre.png)
+====
+RF model
+!(images/GREMLIN_RF_Acc_Pre.png)
+====
 
 # Scoring
 
