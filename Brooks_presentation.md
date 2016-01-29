@@ -80,6 +80,9 @@ How good does it do?
 ====
 GREMLIN model
 !(images/GREMLIN_only_Acc_Pre.png)
+
+% ~/git-repo/GREMLIN_RF/analysis/plot_stats.py
+
 ====
 RF model
 !(images/GREMLIN_RF_Acc_Pre.png)
