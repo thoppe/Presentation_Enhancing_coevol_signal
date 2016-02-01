@@ -20,11 +20,10 @@ Sequence / Mean sequence alignment
     ----DYGIDVSSSTSQSQWSCLAGKN-QRAIIQVWSGGYGLNSQASSIISAAKSAGFQVDVYAFLCNQCSPSSNVIQQIVNSL---GGQFGT--LWIDVEQCS---GCWG-DVNDNAAFVAEAVQTAAS-LGVTVGVYSSLGEWPQTVGSL-SSLSSYPQWYAHYDGVAASQYGGWDNPEMKQYVGNTNECGV--SVDLDYYG--------------
     ----ELGIDVSSATSQSQWSCLAQKN-QRAIIQVWSGGYGMNNGVVSAIQAAQNAGFQVDLYAFLCNQCSPSSNVIQQIVSKIKQSGVSFGT--LWIDVEQCS---GCWG-STSANAAFVVEAVQTAAS-LGVRVGVYSSSGEWPQTVGTL-TSLSSYPQWYAHYDGVPAGQYGGWNNPEMKQYVGNTNQCGV--SVDLDFYG--------------
     ----TYGVDL------AGFQCLVGKGF-FAIVRCYMSSGGIDPNCASSVSAAWAGGMTVDLYLFPCFSCG----SLVQFAQS---NGVNFGK--IWLDIEGPG---TYWG-DQGANQQFFEGLVQGL--S-GVSVGIYTSESQWSPIMGDY-SGGSNFPLWYANYDGSPN-PFGGWSTPTMKQFDDPSN-CGI--GIDENWIG--------------
-    ----ECAIDFSSEISVSQWSCLASNN-QRVIIQVWSGGGQYNSNISSVVSAAEQAGFDIDLYAFLCSECDPASSAIQSLVSSLKSDGINFNM--LWIDVEQCD---GCWG-AESDNADYVQEAVETAQG-LGVLVGVYSSEGEWPQTVGNL-STLSQYPLWYAHYDDNPSAEFGGWTSPAMKQYIGNTNQCGV--SVDLDFYG--------------
     ----GTGIDISSPTSKTQWSCLAKQN-TKAIIQVWSGGYGYNTNIASSVSAAKSAGIQVDLYAFLCSQCSPSSSAIKTLVSNLRSQNVEFGT--LWIDVEQCS---NCWG-STSTNAQFVVEAVQTAQQ-LGVSVGVYSSIGEWSQTVGSL-NSLSSFPLWYAHYDNVPASQFGSWSSPAMKQYAGNTQQCGV--SVDLDFFQ--------------
 Contact maps / Structure
-!(images/1jfx_cmap.png) <<height:400px;>>
-!(images/1jfx.png)      <<height:400px;>>
+!(figures/1jfx_cmap.png) <<height:400px;>>
+!(figures/1jfx.png)      <<height:400px;>>
 
 ====
 
@@ -33,7 +32,7 @@ Contact maps / Structure
 ====
 
 # Mutual information
-(naive attempt) 
+(naïve attempt) 
 
 # $MI_{ij} = \sum f_{ij} (A_i, A_j) \ln \left ( \frac{f_{ij}(A_i,A_j)}{f_i(A_i)f_j(A_j)} \right )$
 
@@ -74,25 +73,25 @@ prevent overfitting
 ====
 # Target dataset
 
-150 monomeric proteins $50<x<250$ residues
+150 monomeric proteins $50< N <250$ residues
 ====
 How good does it do?
 ====
 GREMLIN model
-!(images/GREMLIN_only_Acc_Pre.png)
+!(figures/GREMLIN_only_Acc_Pre.png)
 
 % ~/git-repo/GREMLIN_RF/analysis/plot_stats.py
 
 ====
 RF model
-!(images/GREMLIN_RF_Acc_Pre.png)
+!(figures/GREMLIN_RF_Acc_Pre.png)
 ====
 
 # Scoring
+For a given protein, alignment, GREMLIN gives $(N,N,21,21)$ tensor.
 
-First reduce GREMLIN's tensor output:
-
-# $S_{N,N,21,21} \rightarrow S_{N,N,20,20} \rightarrow  G_{N,N} \rightarrow G^{APC}_{N,N} = g$
+Reduce GREMLIN's tensor output:
+# $S_{N,N,21,21} \rightarrow S_{N,N,20,20} \rightarrow  G_{N,N} \rightarrow G^{\text{APC}}_{N,N} = g$
 
 Drop information about gaps.
 Compute the Frobenius norm over each position.
@@ -130,11 +129,25 @@ Use Random Forests to predict
 
 ====
 
+Example proteins
+!(figures/1a3a/1a3a_cartoon.png) <<width:500px; transparent>> [1a3a](http://www.rcsb.org/pdb/explore.do?structureId=1a3a) IIA MANNITOL FROM ESCHERICHIA COLI
+!(figures/1a3a/1avs_cartoon.png) <<width:500px; transparent>> [1avs](http://www.rcsb.org/pdb/explore.do?structureId=1avs) CALCIUM-SATURATED N-TERMINAL DOMAIN OF TROPONIN C
+
+====
 !! Results plot
 ====
-
-!! Contact map examples
-
+## Contact map vs cutoff length (1a3a)
+!(figures/1a3a/animated_1a3a.gif) <<width:1200px; transparent>>
+====*
+## Contact map vs cutoff length (1avs) 
+!(figures/1a3a/animated_1avs.gif) <<width:1200px; transparent>>
+====*
+### Folding simulations
+!(figures/methods_pairplot.png)
+====
+### Folding 1a3a
+!(figures/folding/folding_1a3a.gif)
+folding is rapid in coarse grained simulation
 ====
 
 What is being predicted?
