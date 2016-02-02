@@ -29,7 +29,7 @@ Sequence $\rightarrow$ Mean Sequence Alignment (MSA) $\rightarrow$ ...
 
 ## What is coevolution?
 
-ADD DETIALS HERE!
+ADD DETAILS HERE!
 
 ====
 
@@ -83,21 +83,36 @@ Regularization (and priors), prevent overfitting
 # Target dataset
 
 150 monomeric proteins $50< N <250$ residues
-====
-How good does it do?
-====
-GREMLIN model
-!(figures/GREMLIN_only_Acc_Pre.png)
+====*
+# Data pipeline
 
-% ~/git-repo/GREMLIN_RF/analysis/plot_stats.py
+Download, parse, and clean PDB.
+Build FASTA and original contact map.
+Align each FASTA using `HHBLITS`*.
+Score alignments with GREMLIN$\dagger$.
+Build contact maps from GREMLIN.
+(optional) Optimize contact map score with RF.
+Fold coarse-grained protein from contact map.
 
-====
-RF model
-!(figures/GREMLIN_RF_Acc_Pre.png)
+&& * `hhblits -i input.seq -n 4 -diff inf -cov 75 -e 0.0000000001` </br> $\dagger$ Dockerize GREMLIN's MATLAB for maximum performance.
+====*
+## Performance measurements
+
+_Accuracy_    : Predictions that are correct : $(TP+TN)/(TP+FP+FN+TN)$
+_Specificity_ : Non-contacts identified :  $TN / (TN+FP)$
+_Precision _: Contacts identified that are true : $TP/(TP+FP)$
+_Sensitivity_ : True contacts identified :  $TP / (TP+FN)$
+
+ROC curves measure *Sensitivity* vs *Specificity*.
+
+False positives (FP) are worse than false negatives (FN).
+
+We measure *Precision* vs *Sensitivity*.
+
 ====
 
 # Scoring
-For a given protein, alignment, GREMLIN gives $(N,N,21,21)$ tensor.
+For a given protein and alignment GREMLIN gives $(N,N,21,21)$ tensor.
 
 Reduce GREMLIN's tensor output:
 # $S_{N,N,21,21} \rightarrow S_{N,N,20,20} \rightarrow  G_{N,N} \rightarrow G^{\text{APC}}_{N,N} = g$
@@ -106,19 +121,27 @@ Drop information about gaps.
 Compute the Frobenius norm over each position.
 Apply "average product correlation" (necessary!)
 
-!! Show image of g map
-
 ====*
 
 ## Top score model
+Rank sort top diagonal of $g$, take top $\alpha N$ contacts.
+Typically values for $\alpha \in [0.1, 3.0]$.
 
-Rank sort $g$, take top $\alpha N$ contacts.
+!(figures/1a3a/1a3a_cartoon.png) <<width:500px; transparent>> [1a3a](http://www.rcsb.org/pdb/explore.do?structureId=1a3a) IIA MANNITOL FROM ESCHERICHIA COLI
+!(figures/1a3a/1avs_cartoon.png) <<width:500px; transparent>> [1avs](http://www.rcsb.org/pdb/explore.do?structureId=1avs) CALCIUM-SATURATED N-TERMINAL DOMAIN OF TROPONIN C
+====*
+Example proteins, GREMLIN APC corrected score
+!(figures/1a3a_GREMLIN.png) <<height:500px; transparent>> [1a3a](http://www.rcsb.org/pdb/explore.do?structureId=1a3a) IIA MANNITOL FROM ESCHERICHIA COLI
+!(figures/1avs_GREMLIN.png) <<height:500px; transparent>> [1avs](http://www.rcsb.org/pdb/explore.do?structureId=1avs) CALCIUM-SATURATED N-TERMINAL DOMAIN OF TROPONIN C
+====*
 
-Typically $\alpha \in [0.1, 1.5]$.
-
-Accuracy vs. Precision
+## GREMLIN Predictions
+!(figures/GREMLIN_only_Acc_Pre.png) <<height:750px; transparent>>
+% ~/git-repo/GREMLIN_RF/analysis/plot_stats.py
 
 ====
+
+Can we do better?
 
 # Hypothesis:
 Local structure can enhance contact prediction
@@ -136,35 +159,40 @@ Subtract mean, scale to unit variance
 Use Random Forests to predict
 
 ====
-
-Example proteins
-!(figures/1a3a/1a3a_cartoon.png) <<width:500px; transparent>> [1a3a](http://www.rcsb.org/pdb/explore.do?structureId=1a3a) IIA MANNITOL FROM ESCHERICHIA COLI
-!(figures/1a3a/1avs_cartoon.png) <<width:500px; transparent>> [1avs](http://www.rcsb.org/pdb/explore.do?structureId=1avs) CALCIUM-SATURATED N-TERMINAL DOMAIN OF TROPONIN C
-====*
-Example proteins, GREMLIN APC corrected score
-!(figures/1a3a_GREMLIN.png) <<height:500px; transparent>> [1a3a](http://www.rcsb.org/pdb/explore.do?structureId=1a3a) IIA MANNITOL FROM ESCHERICHIA COLI
-!(figures/1avs_GREMLIN.png) <<height:500px; transparent>> [1avs](http://www.rcsb.org/pdb/explore.do?structureId=1avs) CALCIUM-SATURATED N-TERMINAL DOMAIN OF TROPONIN C
-
+## Improved RF model Predictions
+!(figures/GREMLIN_RF_Acc_Pre.png)  <<height:750px; transparent>>
 ====
-!! Results plot
-====
+
 ## Contact map vs cutoff length (1a3a)
 !(figures/1a3a/animated_1a3a.gif) <<width:1200px; transparent>>
 ====*
 ## Contact map vs cutoff length (1avs) 
 !(figures/1a3a/animated_1avs.gif) <<width:1200px; transparent>>
-====*
-## Folding simulations
-!(figures/methods_pairplot.png) <<height:750px; transparent>>
+
 ====
+## Folding simulations
+$C_\alpha$ coarse-grained MD simulation
+
+Unbiased estimate of contact map $\rightarrow$ fold.
+
+No prior knowledge (ROSETTA fragments, SS pred., etc...).
+
+Potential = Backbone + smoothed well with range ~ $8\AA$
+
+
+====*
 ### Rapid collapse to contact potential
 !(figures/folding/folding_1a3a.gif) <<height:600px; transparent>>
 $C_\alpha$ coarse-grained MD simulations
-====
-
-What is being predicted?
-ADD: Gaussian kernels (averaged decision trees)
-
+====*
+## Folding simulations, $Q_\text{native}$
+!(figures/pairplot_Q.png) <<height:750px; transparent>>
+====*
+## Folding simulations, RMSD
+!(figures/pairplot_RMSD.png) <<height:750px; transparent>> RMSD
+====*
+Decompose Random Forest features
+!(figures/SVD_RF.png) <<height:725px; transparent>> SVD of Decision Tree weights
 ====
 
 ### Predicted contacts are closer to true contacts
@@ -188,7 +216,7 @@ $g$ can be used as an effective Hamiltonian for evolutionary movement
 Convolutional neural networks
 !(figures/example_CNN.png) <<transparent>>
 
-Enchanced structure prediction eg. ROSETTA?
+Enhanced structure prediction eg. ROSETTA?
 Disambiguation of intra/inter predictions
 Binding partners
 
