@@ -151,10 +151,21 @@ folding is rapid in coarse grained simulation
 ====
 
 What is being predicted?
-
-!! Gaussian kernels (averaged decision trees)
+ADD: Gaussian kernels (averaged decision trees)
 
 ====
+
+What is being predicted?
+
+!(figures/FP_distance.png)
+====
+
+
+# Improvement in folding
+!(figures/folding/Q_avg.png)
+
+====
+
 
 Additional value 
 
