@@ -1,4 +1,4 @@
-## Enhancing the coevolutionary signal
+# Enhancing the coevolutionary signal
 ----------
 ### [Travis Hoppe](http://thoppe.github.io/)
 NIH/NIDDK/LCP Postdoctoral Fellow
@@ -6,28 +6,30 @@ NIH/NIDDK/LCP Postdoctoral Fellow
 ====*
 
 # Outline
-MSA
-Coevolution
-(scoring!)
-structure prediction
+
+### MSA / coevolution
+### *Score functions*
+### Structure prediction
 
 ====
 
 ### Sequence to structure prediction
-Sequence / Mean sequence alignment 
+Sequence $\rightarrow$ Mean Sequence Alignment (MSA) $\rightarrow$ ...
     DTSGVQGIDVSHWQGSINWSSVKSAGMSFAYIKATEGTNYKDDRFSANYTNAYNAGIIRGAYHFARPNASSGTAQADYFASNGGGWSRDNRTLPGVLDIEHNPSGAMCYGLSTTQMRTWINDFHARYKARTTRDVVIYTTASWWNTCTGSWNGMAAKSPFWVAHWGVSAPTVPSGFPTWTFWQYSATGRVGGVSGDVDRNKFNGSAARLLALANNTA
     
     ----DYGIDVSSSTSQSQWSCLAGKN-QRAIIQVWSGGYGLNSQASSIISAAKSAGFQVDVYAFLCNQCSPSSNVIQQIVNSL---GGQFGT--LWIDVEQCS---GCWG-DVNDNAAFVAEAVQTAAS-LGVTVGVYSSLGEWPQTVGSL-SSLSSYPQWYAHYDGVAASQYGGWDNPEMKQYVGNTNECGV--SVDLDYYG--------------
     ----ELGIDVSSATSQSQWSCLAQKN-QRAIIQVWSGGYGMNNGVVSAIQAAQNAGFQVDLYAFLCNQCSPSSNVIQQIVSKIKQSGVSFGT--LWIDVEQCS---GCWG-STSANAAFVVEAVQTAAS-LGVRVGVYSSSGEWPQTVGTL-TSLSSYPQWYAHYDGVPAGQYGGWNNPEMKQYVGNTNQCGV--SVDLDFYG--------------
     ----TYGVDL------AGFQCLVGKGF-FAIVRCYMSSGGIDPNCASSVSAAWAGGMTVDLYLFPCFSCG----SLVQFAQS---NGVNFGK--IWLDIEGPG---TYWG-DQGANQQFFEGLVQGL--S-GVSVGIYTSESQWSPIMGDY-SGGSNFPLWYANYDGSPN-PFGGWSTPTMKQFDDPSN-CGI--GIDENWIG--------------
     ----GTGIDISSPTSKTQWSCLAKQN-TKAIIQVWSGGYGYNTNIASSVSAAKSAGIQVDLYAFLCSQCSPSSSAIKTLVSNLRSQNVEFGT--LWIDVEQCS---NCWG-STSTNAQFVVEAVQTAQQ-LGVSVGVYSSIGEWSQTVGSL-NSLSSFPLWYAHYDNVPASQFGSWSSPAMKQYAGNTQQCGV--SVDLDFFQ--------------
-Contact maps / Structure
-!(figures/1jfx_cmap.png) <<height:400px;>>
-!(figures/1jfx.png)      <<height:400px;>>
+... $\rightarrow$ Contact maps $\rightarrow$ Structure
+!(figures/1jfx_cmap.png) <<height:400px;transparent>>
+!(figures/1jfx.png)      <<height:400px;transparent>>
 
-====
+====*
 
 ## What is coevolution?
+
+ADD DETIALS HERE!
 
 ====
 
@@ -40,7 +42,9 @@ $f_i, f_{ij}$ are observed frequencies and co-frequencies respectively.
 
 works poorly due to transitivity. e.g. A-B and B-C, this model predicts A-C.
 
-====
+&& [Covariation of mutations in the V3 loop of human immunodeficiency virus: an information theoretic analysis](http://www.pnas.org/content/110/39/15674.abstract) </br> Korber, Farber, Wolpert, & Lapedes
+
+====*
 
 ### Maximum-entropy model / Markov Random Field
 # $P(X=x) = \frac{1}{Z} \exp \left ( \sum_{i=1}^L \left [ v_i(x_i) + \sum_{j>i}^L w_{ij}(x_i,x_j) \right ] \right ) $
@@ -51,12 +55,18 @@ amino acid composition at position $i$ from MSA.
 $v_i$ encodes individual propensity of each amino acid at position $i$
 $w_{ij}$ statistical coupling of amino acid propensities between positions $i,j$
 
-&& [Assessing the utility of coevolution-based residue–residue contact predictions in a sequence- and structure-rich era](http://www.pnas.org/content/110/39/15674.abstract) Kamisetty, Ovchinnikova, and Baker.
+&& [Learning generative models for protein fold families](http://www.ncbi.nlm.nih.gov/pubmed/21268112) </br> Balakrishnan, Kamisetty, Carbonell, Lee, and Langmead
 
 ====*
 # DCA
+
+&& [Direct-coupling analysis of residue coevolution captures native contacts across many protein families](http://www.pnas.org/content/108/49/E1293) </br> Morcosa, Pagnanib, Lunta, Bertolinoc, Marksd, Sandere, Zecchinab,  Onuchica, Hwaa, and Weigt
 ====*
 # PSICOV
+
+&& [PSICOV: precise structural contact prediction using sparse inverse covariance estimation](http://bioinformatics.oxfordjournals.org/content/28/2/184.abstract) </br> Jones, Buchan, Cozzetto, and Pontil
+
+
 ====*
 
 ## GREMLIN
@@ -68,6 +78,7 @@ Optimize the _pseduolikelihood_ of $v,w$
 Regularization (and priors), prevent overfitting
 ## $R(v,w) = \lambda_v ||v||^2 + \sum_{i,j} \lambda_w^{i,j} || w_{i,j} || ^2$
 
+&& [Assessing the utility of coevolution-based residue–residue contact predictions in a sequence- and structure-rich era](http://www.pnas.org/content/110/39/15674.abstract) Kamisetty, Ovchinnikova, and Baker.
 ====
 # Target dataset
 
@@ -143,12 +154,12 @@ Example proteins, GREMLIN APC corrected score
 ## Contact map vs cutoff length (1avs) 
 !(figures/1a3a/animated_1avs.gif) <<width:1200px; transparent>>
 ====*
-### Folding simulations
-!(figures/methods_pairplot.png)
+## Folding simulations
+!(figures/methods_pairplot.png) <<height:750px; transparent>>
 ====
-### Folding 1a3a
-!(figures/folding/folding_1a3a.gif)
-folding is rapid in coarse grained simulation
+### Rapid collapse to contact potential
+!(figures/folding/folding_1a3a.gif) <<height:600px; transparent>>
+$C_\alpha$ coarse-grained MD simulations
 ====
 
 What is being predicted?
@@ -156,16 +167,14 @@ ADD: Gaussian kernels (averaged decision trees)
 
 ====
 
-What is being predicted?
+### Predicted contacts are closer to true contacts
+## $d(x) = \min_{y \in \text{TP}}|\vec{x}-\vec{y}|$
 
-!(figures/local_structure_distance.png) <<height:450px; transparent>> 
-!(figures/FP_distance.png) <<height:450px; transparent>> 
+!(figures/local_structure_distance.png) <<height:450px; transparent>>  Distance from predicted contact to true contact 
+!(figures/FP_distance.png) <<height:450px; transparent>> Average distance for all proteins
 ====
-
-
-# Improvement in folding
-!(figures/folding/Q_avg.png)
-
+## Improvement in folding
+!(figures/folding/Q_avg.png) <<height:700px; transparent>>
 ====
 
 
@@ -176,26 +185,25 @@ $g$ can be used as an effective Hamiltonian for evolutionary movement
 ====
 
 # Future work
-
 Convolutional neural networks
-Correct structure prediction (ROSETTA?) (Go?)
+!(figures/example_CNN.png) <<transparent>>
 
+Enchanced structure prediction eg. ROSETTA?
 Disambiguation of intra/inter predictions
-
 Binding partners
 
 ====
 
 ## Thank you.
 
-####  Robert Best (NIH/NIDDK)
+####  *Robert Best* (NIH/NIDDK)
 Wenwei Zheng
-Travis Hoppe
+*Travis Hoppe*
 *Pengfei Tian*
 Jan Domanski
 Mathias Bellaiche
 
-#### Jeff Gray (John Hopkins)
+#### Jeff Gray (John Hopkins, Chemical Engineering)
 Julia Joehler
 
 
