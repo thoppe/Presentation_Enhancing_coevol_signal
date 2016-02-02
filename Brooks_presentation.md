@@ -140,25 +140,24 @@ Example proteins, GREMLIN APC corrected score
 % ~/git-repo/GREMLIN_RF/analysis/plot_stats.py
 
 ====
-
-Can we do better?
-
 # Hypothesis:
-Local structure can enhance contact prediction
+Local structure can enhance contact prediction.
 !(figures/local_structure_zoom.png) <<width:500px; transparent>>
 
-Secondary structure is local (helices, sheets)
+Secondary structure is local (helices, sheets, turns).
+====*
+## Random forest (RF) score model
+Machine learn local pixel maps for contact/non-contact.
 
-====
+Normalize data: subtract mean, scale to unit variance.
 
-Machine learn local pixel maps
+Train with extremely random forests*, variant with dropout.
 
-### Normalize data
-Subtract mean, scale to unit variance
+(e)RF's were more robust than traditional shallow learning like SVM.
 
-Use Random Forests to predict
+&& *RF parameters `kernel_window=2`, `n_trees=200`, `ratio_TP_to_TN=20`
 
-====
+====*
 ## Improved RF model Predictions
 !(figures/GREMLIN_RF_Acc_Pre.png)  <<height:750px; transparent>>
 ====
@@ -170,16 +169,16 @@ Use Random Forests to predict
 !(figures/1a3a/animated_1avs.gif) <<width:1200px; transparent>>
 
 ====
-## Folding simulations
+# Folding simulations
 $C_\alpha$ coarse-grained MD simulation
 
 Unbiased estimate of contact map $\rightarrow$ fold.
 
 No prior knowledge (ROSETTA fragments, SS pred., etc...).
 
-Potential = Backbone + smoothed well with range ~ $8\AA$
+Potential = Backbone + smoothed well with range ~ $8\AA$.
 
-
+%Poor RMSD due to loose interations.
 ====*
 ### Rapid collapse to contact potential
 !(figures/folding/folding_1a3a.gif) <<height:600px; transparent>>
@@ -190,39 +189,44 @@ $C_\alpha$ coarse-grained MD simulations
 ====*
 ## Folding simulations, RMSD
 !(figures/pairplot_RMSD.png) <<height:750px; transparent>> RMSD
-====*
-Decompose Random Forest features
-!(figures/SVD_RF.png) <<height:725px; transparent>> SVD of Decision Tree weights
 ====
-
+# Features of the RF model
+scientific insight beyond predictive capability
+====*
 ### Predicted contacts are closer to true contacts
 ## $d(x) = \min_{y \in \text{TP}}|\vec{x}-\vec{y}|$
 
 !(figures/local_structure_distance.png) <<height:450px; transparent>>  Distance from predicted contact to true contact 
 !(figures/FP_distance.png) <<height:450px; transparent>> Average distance for all proteins
-====
+====*
 ## Improvement in folding
-!(figures/folding/Q_avg.png) <<height:700px; transparent>>
+In $C_\alpha$ potential, more contacts $\approx$ better RF fold.
+!(figures/folding/Q_avg.png) <<height:675px; transparent>>
+====*
+Random Forest features (central difference most important)
+!(figures/SVD_RF.png) <<height:725px; transparent>> SVD of Decision Tree weights
+====
+## Future work & Extensions
+
+Convolutional neural networks to improve prediction:
+!(figures/example_CNN.png) <<height:300px; transparent>>
+
+
+$g$ can be used as an effective Hamiltonian for evolutionary movement.
+
+====*
+## Future work & Extensions
+
+Enhanced structure prediction, ROSETTA et. al.
+
+
+Disambiguation of intra/inter predictions.
+
+
+Estimation of binding partners and hetrodimers from $g$.
 ====
 
-
-Additional value 
-
-$g$ can be used as an effective Hamiltonian for evolutionary movement
-
-====
-
-# Future work
-Convolutional neural networks
-!(figures/example_CNN.png) <<transparent>>
-
-Enhanced structure prediction eg. ROSETTA?
-Disambiguation of intra/inter predictions
-Binding partners
-
-====
-
-## Thank you.
+# Thanks, you.
 
 ####  *Robert Best* (NIH/NIDDK)
 Wenwei Zheng
