@@ -41,7 +41,7 @@
 	<section class="vertical-stack">
 <section   class="vertical-slide">
 <p>
-<h3>Enhancing the coevolutionary signal</h3></p>
+<h2>Enhancing the coevolutionary signal</h2></p>
 <hr>
 <p>
 <h3><a href="http://thoppe.github.io/">Travis Hoppe</a></h3>NIH/NIDDK/LCP Postdoctoral Fellow</p>
@@ -1122,7 +1122,7 @@ Optimize the <em>pseduolikelihood</em> of <svg class="latexSVG" height="100%" ve
 </svg></h1></p>
 <br>
 <p>
-Regularization (and priors)<h2><svg class="latexSVG" height="100%" version="1.2" viewBox="0 0 151.074375 22.640875" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+Regularization (and priors), prevent overfitting<h2><svg class="latexSVG" height="100%" version="1.2" viewBox="0 0 151.074375 22.640875" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
  <defs>
   <g>
    <symbol id="equation_BSZSM_14" overflow="visible">
@@ -1263,9 +1263,6 @@ Regularization (and priors)<h2><svg class="latexSVG" height="100%" version="1.2"
   </g>
  </g>
 </svg></h2></p>
-<br>
-<p>
-prevent overfitting</p>
 </section>
 </section><section class="vertical-stack">
 <section   class="vertical-slide">
@@ -1651,7 +1648,15 @@ Accuracy vs. Precision</p>
 <section   class="vertical-slide">
 <p>
 <h1>Hypothesis:</h1>Local structure can enhance contact prediction</p>
+<figure>
+    <a href="figures/local_structure_zoom.png">
+    <img class="transparent_image" src="figures/local_structure_zoom.png" width="500px">
+    </a>
+    
+    </figure>
 <br>
+<p>
+Secondary structure is local (helices, sheets)</p>
 </section>
 </section><section class="vertical-stack">
 <section   class="vertical-slide">
@@ -1677,6 +1682,21 @@ Example proteins</p>
 <figure>
     <a href="figures/1a3a/1avs_cartoon.png">
     <img class="transparent_image" src="figures/1a3a/1avs_cartoon.png" width="500px">
+    </a>
+    <figcaption><a href="http://www.rcsb.org/pdb/explore.do?structureId=1avs">1avs</a> CALCIUM-SATURATED N-TERMINAL DOMAIN OF TROPONIN C</figcaption>
+    </figure>
+</section><section   class="vertical-slide">
+<p>
+Example proteins, GREMLIN APC corrected score</p>
+<figure>
+    <a href="figures/1a3a_GREMLIN.png">
+    <img class="transparent_image" src="figures/1a3a_GREMLIN.png" height="500px">
+    </a>
+    <figcaption><a href="http://www.rcsb.org/pdb/explore.do?structureId=1a3a">1a3a</a> IIA MANNITOL FROM ESCHERICHIA COLI</figcaption>
+    </figure>
+<figure>
+    <a href="figures/1avs_GREMLIN.png">
+    <img class="transparent_image" src="figures/1avs_GREMLIN.png" height="500px">
     </a>
     <figcaption><a href="http://www.rcsb.org/pdb/explore.do?structureId=1avs">1avs</a> CALCIUM-SATURATED N-TERMINAL DOMAIN OF TROPONIN C</figcaption>
     </figure>
@@ -1739,8 +1759,14 @@ What is being predicted?<br>ADD: Gaussian kernels (averaged decision trees)</p>
 What is being predicted?</p>
 <br>
 <figure>
+    <a href="figures/local_structure_distance.png">
+    <img class="transparent_image" src="figures/local_structure_distance.png" height="450px">
+    </a>
+    
+    </figure>
+<figure>
     <a href="figures/FP_distance.png">
-    <img class="" src="figures/FP_distance.png" >
+    <img class="transparent_image" src="figures/FP_distance.png" height="450px">
     </a>
     
     </figure>

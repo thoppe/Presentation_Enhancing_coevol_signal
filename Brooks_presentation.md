@@ -1,4 +1,4 @@
-### Enhancing the coevolutionary signal
+## Enhancing the coevolutionary signal
 ----------
 ### [Travis Hoppe](http://thoppe.github.io/)
 NIH/NIDDK/LCP Postdoctoral Fellow
@@ -65,10 +65,8 @@ Optimize the _pseduolikelihood_ of $v,w$
 # $ P(v,w | D) = \sum_{n=1}^N \sum_{i=1}^L \log P (x_i^n | x_{i'}, v, w)$
 # $ P (x_i^n | x_{i'}, v, w) = \frac{1}{Z_i} \exp \left ( v_i(x_i^n) + \sum_{j=1,j \neq i}^L w_{ij}(x_i^n,x_j^n) \right )$
 
-Regularization (and priors)
+Regularization (and priors), prevent overfitting
 ## $R(v,w) = \lambda_v ||v||^2 + \sum_{i,j} \lambda_w^{i,j} || w_{i,j} || ^2$
-
-prevent overfitting
 
 ====
 # Target dataset
@@ -113,8 +111,7 @@ Accuracy vs. Precision
 
 # Hypothesis:
 Local structure can enhance contact prediction
-
-!! zoomed pixel map
+!(figures/local_structure_zoom.png) <<width:500px; transparent>>
 
 Secondary structure is local (helices, sheets)
 
@@ -132,6 +129,10 @@ Use Random Forests to predict
 Example proteins
 !(figures/1a3a/1a3a_cartoon.png) <<width:500px; transparent>> [1a3a](http://www.rcsb.org/pdb/explore.do?structureId=1a3a) IIA MANNITOL FROM ESCHERICHIA COLI
 !(figures/1a3a/1avs_cartoon.png) <<width:500px; transparent>> [1avs](http://www.rcsb.org/pdb/explore.do?structureId=1avs) CALCIUM-SATURATED N-TERMINAL DOMAIN OF TROPONIN C
+====*
+Example proteins, GREMLIN APC corrected score
+!(figures/1a3a_GREMLIN.png) <<height:500px; transparent>> [1a3a](http://www.rcsb.org/pdb/explore.do?structureId=1a3a) IIA MANNITOL FROM ESCHERICHIA COLI
+!(figures/1avs_GREMLIN.png) <<height:500px; transparent>> [1avs](http://www.rcsb.org/pdb/explore.do?structureId=1avs) CALCIUM-SATURATED N-TERMINAL DOMAIN OF TROPONIN C
 
 ====
 !! Results plot
@@ -157,7 +158,8 @@ ADD: Gaussian kernels (averaged decision trees)
 
 What is being predicted?
 
-!(figures/FP_distance.png)
+!(figures/local_structure_distance.png) <<height:450px; transparent>> 
+!(figures/FP_distance.png) <<height:450px; transparent>> 
 ====
 
 
