@@ -29,7 +29,10 @@ Sequence $\rightarrow$ Mean Sequence Alignment (MSA) $\rightarrow$ ...
 
 ## What is coevolution?
 
-ADD DETAILS HERE!
+Observation: Homologous proteins impose strong constraints 
+on their sequence variability.
+
+Assume: If two residues form a contact, a destabilizing substitution at one position is expected to be compensated by a substitution of the other position over the evolutionary timescale, in order for the residue pair to maintain attractive interaction.
 
 ====
 
@@ -48,8 +51,11 @@ works poorly due to transitivity. e.g. A-B and B-C, this model predicts A-C.
 
 ### Maximum-entropy model / Markov Random Field
 # $P(X=x) = \frac{1}{Z} \exp \left ( \sum_{i=1}^L \left [ v_i(x_i) + \sum_{j>i}^L w_{ij}(x_i,x_j) \right ] \right ) $
-$X_i$ is a random variable that represents 
-amino acid composition at position $i$ from MSA.
+Least-constraint model that matches marginal distributions of $f_i$ and $f_{ij}$.
+%$X_i$ is a random variable that represents 
+%amino acid composition at position $i$ from MSA.
+
+Brute force computational complexity of pairwise $Z$ is $O(N^2 21^N)$.
 
 ##### Learned parameters
 $v_i$ encodes individual propensity of each amino acid at position $i$
@@ -58,31 +64,69 @@ $w_{ij}$ statistical coupling of amino acid propensities between positions $i,j$
 && [Learning generative models for protein fold families](http://www.ncbi.nlm.nih.gov/pubmed/21268112) </br> Balakrishnan, Kamisetty, Carbonell, Lee, and Langmead
 
 ====*
-# DCA
+## DCA (direct coupling analysis)*
+Focus on high MI pairs, use reduced two-residue systems.
 
-&& [Direct-coupling analysis of residue coevolution captures native contacts across many protein families](http://www.pnas.org/content/108/49/E1293) </br> Morcosa, Pagnanib, Lunta, Bertolinoc, Marksd, Sandere, Zecchinab,  Onuchica, Hwaa, and Weigt
-====*
-# PSICOV
+## PSICOV $\dagger$
+Compute pairwise covariance $\text{Cov}(X,Y)=E(XY)-E(X)E(Y)$ over all pairs of sites for all residues from MSA. Invert the matrix with tricks to avoid singular matrices (assume sparsity, most entries are zero in inversion).
 
-&& [PSICOV: precise structural contact prediction using sparse inverse covariance estimation](http://bioinformatics.oxfordjournals.org/content/28/2/184.abstract) </br> Jones, Buchan, Cozzetto, and Pontil
+
+&& *[Identification of direct residue contacts in protein–protein interaction by message passing] (http://www.pnas.org/content/106/1/67.full) </br> Weigt, White, Szurmant, Hoch, and Hwa </br> $\dagger$ [PSICOV: precise structural contact prediction using sparse inverse covariance estimation](http://bioinformatics.oxfordjournals.org/content/28/2/184.abstract) </br> Jones, Buchan, Cozzetto, and Pontil
+
+% && [Direct-coupling analysis of residue coevolution captures native contacts across many protein families](http://www.pnas.org/content/108/49/E1293) </br> Morcos, Pagnani, Lunta, Bertolinoc, Marksd, Sandere, Zecchinab,  Onuchica, Hwaa, and Weigt
+
 
 
 ====*
 
 ## GREMLIN
-
 Optimize the _pseduolikelihood_ of $v,w$
-# $ P(v,w | D) = \sum_{n=1}^N \sum_{i=1}^L \log P (x_i^n | x_{i'}, v, w)$
-# $ P (x_i^n | x_{i'}, v, w) = \frac{1}{Z_i} \exp \left ( v_i(x_i^n) + \sum_{j=1,j \neq i}^L w_{ij}(x_i^n,x_j^n) \right )$
+# $ P(v,w | D) = \sum_{n=1}^N \sum_{i=1}^L \log P (x_i^n | x_{i'}^n, v, w)$
+# $ P (x_i^n | x_{i'}^n, v, w) = \frac{1}{Z_i} \exp \left ( v_i(x_i^n) + \sum_{j=1,j \neq i}^L w_{ij}(x_i^n,x_j^n) \right )$
+Models conditional distribution of the original joint distribution 
+instead of the joint distribution itself.
 
-Regularization (and priors), prevent overfitting
-## $R(v,w) = \lambda_v ||v||^2 + \sum_{i,j} \lambda_w^{i,j} || w_{i,j} || ^2$
+Can add regularization to prevent overfitting and prior knowledge.
+%## $R(v,w) = \lambda_v ||v||^2 + \sum_{i,j} \lambda_w^{i,j} || w_{i,j} || ^2$
 
 && [Assessing the utility of coevolution-based residue–residue contact predictions in a sequence- and structure-rich era](http://www.pnas.org/content/110/39/15674.abstract) Kamisetty, Ovchinnikova, and Baker.
 ====
 # Target dataset
 
-150 monomeric proteins $50< N <250$ residues
+Pfam families with $\ge 1000$ sequences with high resolution $\le 1.9 \AA$.
+150 monomeric proteins $50< N <275$ residues, [diverse set](http://bioinformatics.oxfordjournals.org/content/suppl/2011/11/29/btr638.DC1/target.txt).
+
+    PDB-ID  Pfam-ID Nseq    Length  Description
+    ========================================================================================
+    1GUUA   PF00249 10393   50      Myb-like DNA-binding domain
+    1BRFA   PF00301 1430    53      Rubredoxin
+    1AAPA   PF00014 2256    56      Kunitz/Bovine pancreatic trypsin inhibitor domain
+    1JO8A   PF00018 6287    58      SH3 domain
+    1KU3A   PF04545 8439    61      Sigma-70, region 4
+    1M8AA   PF00048 1062    61      Small cytokines (intecrine/chemokine), interleukin-8 like
+    1C9OA   PF00313 6807    66      'Cold-shock' DNA-binding domain
+    1VFYA   PF01363 1645    67      FYVE zinc finger
+    1CTFA   PF00542 2390    68      Ribosomal protein L7/L12 C-terminal domain
+    1KW4A   PF07647 1192    70      SAM domain (Sterile alpha motif)
+    1CC8A   PF00403 9383    72      Heavy-metal-associated domain
+    1ATZA   PF00092 7567    75      von Willebrand factor type A domain
+    1TIFA   PF05198 1947    76      Translation initiation factor IF-3, N-terminal domain
+    1H98A   PF00037 10421   77      4Fe-4S binding domain
+    1T8KA   PF00550 20685   77      Phosphopantetheine attachment site
+    1BDOA   PF00364 11826   80      Biotin-requiring enzyme
+    1AVSA   PF00036 13234   81      EF hand
+    1CXYA   PF00173 3200    81      Cytochrome b5-like Heme/Steroid binding domain
+    1I71A   PF00051 1082    83      Kringle domain
+    1ABAA   PF00462 5749    87      Glutaredoxin
+    1DSXA   PF02214 1372    87      K+ channel tetramerisation domain
+    1SMXA   PF10150 2203    87      Ribonuclease E/G family
+    1NPSA   PF00030 1153    88      Beta/Gamma crystallin
+    1PCHA   PF00381 3344    88      PTS HPr component phosphorylation site
+    1VJKA   PF02597 3283    88      ThiS family
+    1FNAA   PF00041 17137   91      Fibronectin type III domain
+    1G9OA   PF00595 14944   91      PDZ domain (Also known as DHR or GLGF)
+    1FK5A   PF00234 3346    93      Protease inhibitor/seed storage/LTP family
+
 ====*
 # Data pipeline
 
@@ -156,6 +200,15 @@ Train with extremely random forests*, variant with dropout.
 (e)RF's were more robust than traditional shallow learning like SVM.
 
 && *RF parameters `kernel_window=2`, `n_trees=200`, `ratio_TP_to_TN=20`
+====*
+## What are Random Forests?
+Decision trees are good for simple data, but tend to overfit.
+!(figures/example_Dtree.png) <<transparent>>
+
+Random forests are multiple decision trees with 1] "random splits", 
+2] selective subsets, (each tree only gets to see a subset of the data). 
+This increases individual bias but the average corrects for overfitting.
+
 
 ====*
 ## Improved RF model Predictions
@@ -186,9 +239,9 @@ $C_\alpha$ coarse-grained MD simulations
 ====*
 ## Folding simulations, $Q_\text{native}$
 !(figures/pairplot_Q.png) <<height:750px; transparent>>
-====*
-## Folding simulations, RMSD
-!(figures/pairplot_RMSD.png) <<height:750px; transparent>> RMSD
+%====*
+%## Folding simulations, RMSD
+%!(figures/pairplot_RMSD.png) <<height:750px; transparent>> RMSD
 ====
 # Features of the RF model
 scientific insight beyond predictive capability
