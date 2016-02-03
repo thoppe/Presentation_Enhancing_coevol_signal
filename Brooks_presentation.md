@@ -7,14 +7,14 @@ NIH/NIDDK/LCP Postdoctoral Fellow
 
 # Outline
 
-### MSA / coevolution
+### Alignment / coevolution
 ### *Score functions*
 ### Structure prediction
 
 ====
 
 ### Sequence to structure prediction
-Sequence $\rightarrow$ Mean Sequence Alignment (MSA) $\rightarrow$ ...
+Sequence $\rightarrow$ Multiple Sequence Alignment $\rightarrow$ ...
     DTSGVQGIDVSHWQGSINWSSVKSAGMSFAYIKATEGTNYKDDRFSANYTNAYNAGIIRGAYHFARPNASSGTAQADYFASNGGGWSRDNRTLPGVLDIEHNPSGAMCYGLSTTQMRTWINDFHARYKARTTRDVVIYTTASWWNTCTGSWNGMAAKSPFWVAHWGVSAPTVPSGFPTWTFWQYSATGRVGGVSGDVDRNKFNGSAARLLALANNTA
     
     ----DYGIDVSSSTSQSQWSCLAGKN-QRAIIQVWSGGYGLNSQASSIISAAKSAGFQVDVYAFLCNQCSPSSNVIQQIVNSL---GGQFGT--LWIDVEQCS---GCWG-DVNDNAAFVAEAVQTAAS-LGVTVGVYSSLGEWPQTVGSL-SSLSSYPQWYAHYDGVAASQYGGWDNPEMKQYVGNTNECGV--SVDLDYYG--------------
@@ -39,7 +39,7 @@ Assume: If two residues form a contact, a destabilizing substitution at one posi
 # Mutual information
 (naïve attempt) 
 
-# $MI_{ij} = \sum f_{ij} (A_i, A_j) \ln \left ( \frac{f_{ij}(A_i,A_j)}{f_i(A_i)f_j(A_j)} \right )$
+# $MI_{ij} = \sum f_{ij} \ln \left ( \frac{f_{ij}}{f_i f_j} \right )$
 
 $f_i, f_{ij}$ are observed frequencies and co-frequencies respectively. 
 
@@ -80,21 +80,23 @@ Compute pairwise covariance $\text{Cov}(X,Y)=E(XY)-E(X)E(Y)$ over all pairs of s
 ====*
 
 ## GREMLIN
-Optimize the _pseduolikelihood_ of $v,w$
+Optimize the _pseudolikelihood_ of $v,w$
 # $ P(v,w | D) = \sum_{n=1}^N \sum_{i=1}^L \log P (x_i^n | x_{i'}^n, v, w)$
 # $ P (x_i^n | x_{i'}^n, v, w) = \frac{1}{Z_i} \exp \left ( v_i(x_i^n) + \sum_{j=1,j \neq i}^L w_{ij}(x_i^n,x_j^n) \right )$
 Models conditional distribution of the original joint distribution 
-instead of the joint distribution itself.
+instead of the joint distribution itself. Can add regularization 
+to prevent overfitting and prior knowledge.
 
-Can add regularization to prevent overfitting and prior knowledge.
+$v_i$ encodes individual propensity of each amino acid at position $i$
+$w_{ij}$ statistical coupling of amino acid propensities between positions $i,j$
+
 %## $R(v,w) = \lambda_v ||v||^2 + \sum_{i,j} \lambda_w^{i,j} || w_{i,j} || ^2$
-
 && [Assessing the utility of coevolution-based residue–residue contact predictions in a sequence- and structure-rich era](http://www.pnas.org/content/110/39/15674.abstract) Kamisetty, Ovchinnikova, and Baker.
 ====
 # Target dataset
 
 Pfam families with $\ge 1000$ sequences with high resolution $\le 1.9 \AA$.
-150 monomeric proteins $50< N <275$ residues, [diverse set](http://bioinformatics.oxfordjournals.org/content/suppl/2011/11/29/btr638.DC1/target.txt).
+150 monomeric proteins $50< N <275$ residues; [diverse set](http://bioinformatics.oxfordjournals.org/content/suppl/2011/11/29/btr638.DC1/target.txt).
 
     PDB-ID  Pfam-ID Nseq    Length  Description
     ========================================================================================
@@ -131,7 +133,7 @@ Pfam families with $\ge 1000$ sequences with high resolution $\le 1.9 \AA$.
 # Data pipeline
 
 Download, parse, and clean PDB.
-Build FASTA and original contact map.
+Build FASTA and reference contact map.
 Align each FASTA using `HHBLITS`*.
 Score alignments with GREMLIN$\dagger$.
 Build contact maps from GREMLIN.
@@ -139,6 +141,32 @@ Build contact maps from GREMLIN.
 Fold coarse-grained protein from contact map.
 
 && * `hhblits -i input.seq -n 4 -diff inf -cov 75 -e 0.0000000001` </br> $\dagger$ Dockerize GREMLIN's MATLAB for maximum performance.
+====
+
+# Scoring
+For a given protein and alignment GREMLIN gives $(N,N,21,21)$ tensor.
+
+Reduce GREMLIN's tensor output:
+# $S_{N,N,21,21} \rightarrow S_{N,N,20,20} \rightarrow  G_{N,N} \rightarrow G^{\text{APC}}_{N,N} = g$
+Drop information about gaps.
+Compute the Frobenius norm over each position.
+Subtract _average product correlation_*, structural vs. shared ancestry
+#### $APC(a,b) = MI(a,\overline{x}) MI(b,\overline{x}) / \overline{\text{MI}}$
+
+&& *[Mutual information without the influence of phylogeny or entropy dramatically improves residue contact prediction](http://bioinformatics.oxfordjournals.org/content/24/3/333.abstract) <br/> Dunn, Wahl, and Gloor
+
+====*
+
+## Top score model
+Rank sort top diagonal of $g$, take top $L N$ contacts.
+Typically values for $L \in [0.1, 3.0]$.
+
+!(figures/1a3a/1a3a_cartoon.png) <<width:500px; transparent>> [1a3a](http://www.rcsb.org/pdb/explore.do?structureId=1a3a) IIA MANNITOL FROM ESCHERICHIA COLI
+!(figures/1a3a/1avs_cartoon.png) <<width:500px; transparent>> [1avs](http://www.rcsb.org/pdb/explore.do?structureId=1avs) CALCIUM-SATURATED N-TERMINAL DOMAIN OF TROPONIN C
+====*
+Example proteins, GREMLIN APC corrected score
+!(figures/1a3a_GREMLIN.png) <<height:500px; transparent>> [1a3a](http://www.rcsb.org/pdb/explore.do?structureId=1a3a) IIA MANNITOL FROM ESCHERICHIA COLI
+!(figures/1avs_GREMLIN.png) <<height:500px; transparent>> [1avs](http://www.rcsb.org/pdb/explore.do?structureId=1avs) CALCIUM-SATURATED N-TERMINAL DOMAIN OF TROPONIN C
 ====*
 ## Performance measurements
 
@@ -152,31 +180,6 @@ ROC curves measure *Sensitivity* vs *Specificity*.
 False positives (FP) are worse than false negatives (FN).
 
 We measure *Precision* vs *Sensitivity*.
-
-====
-
-# Scoring
-For a given protein and alignment GREMLIN gives $(N,N,21,21)$ tensor.
-
-Reduce GREMLIN's tensor output:
-# $S_{N,N,21,21} \rightarrow S_{N,N,20,20} \rightarrow  G_{N,N} \rightarrow G^{\text{APC}}_{N,N} = g$
-
-Drop information about gaps.
-Compute the Frobenius norm over each position.
-Apply "average product correlation" (necessary!)
-
-====*
-
-## Top score model
-Rank sort top diagonal of $g$, take top $\alpha N$ contacts.
-Typically values for $\alpha \in [0.1, 3.0]$.
-
-!(figures/1a3a/1a3a_cartoon.png) <<width:500px; transparent>> [1a3a](http://www.rcsb.org/pdb/explore.do?structureId=1a3a) IIA MANNITOL FROM ESCHERICHIA COLI
-!(figures/1a3a/1avs_cartoon.png) <<width:500px; transparent>> [1avs](http://www.rcsb.org/pdb/explore.do?structureId=1avs) CALCIUM-SATURATED N-TERMINAL DOMAIN OF TROPONIN C
-====*
-Example proteins, GREMLIN APC corrected score
-!(figures/1a3a_GREMLIN.png) <<height:500px; transparent>> [1a3a](http://www.rcsb.org/pdb/explore.do?structureId=1a3a) IIA MANNITOL FROM ESCHERICHIA COLI
-!(figures/1avs_GREMLIN.png) <<height:500px; transparent>> [1avs](http://www.rcsb.org/pdb/explore.do?structureId=1avs) CALCIUM-SATURATED N-TERMINAL DOMAIN OF TROPONIN C
 ====*
 
 ## GREMLIN Predictions
