@@ -1,0 +1,36 @@
+
+% Equation placeholders
+\newcommand{\SPHYvals}{%
+  Y_{\ell m}^{*} ( \hat{\vect{r}}_i ) 
+  Y_{\ell m}     ( \hat{\vect{r}} ) 
+}
+
+\newcommand{\SPHsumterms}{%
+    \sum_{\ell=0}^\infty \sum_{m=-\ell}^{\ell} %
+}
+
+\newcommand{\SPHsum}[1]{%
+  \SPHsumterms
+  #1
+  \SPHYvals
+}
+
+\newcommand{\normdiff}[1]{%
+  \norm{ \vect{#1} - \vect{#1}_i}
+}
+
+\newcommand{\ViralInteractionPot}{\Phi_{12}}
+\newcommand{\transpose}[1]{^{\intercal}}
+
+\newcommand{\sphericalBesselIN}{ i }
+\newcommand{\sphericalBesselKN}{ k }
+\newcommand{\knownPHI}{\Psi}
+\newcommand{\macroPHI}{\Phi}
+
+\newcommand{\pka}{\text{pKa}}
+\newcommand{\pH}{\text{pH}}
+\newcommand{\LMAX}{\ell_{\text{MAX}}}
+
+\newcommand{\effChargeLocations}{\vect{r}_1, \vect{r}_2, \ldots, \vect{r}_N}
+\newcommand{\fittingACCeffective}{\chi}
+\newcommand{\debyehukel}{Debye-H\"{u}ckel }

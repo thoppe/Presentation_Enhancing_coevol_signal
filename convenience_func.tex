@@ -1,0 +1,45 @@
+% Convenience functions
+\newcommand{\pfrac}[2]
+        {\frac{\partial #1}{\partial #2}}       % partial 1 /partial 2 
+\newcommand{\ket}[1]
+        {\left | \, #1 \right \rangle}          % bra-ket notation
+\newcommand{\abs}[1]{
+        \left\vert #1 \right\vert}		% vert bars for averages
+\newcommand{\norm}[1]
+        {\left\Vert #1 \right\Vert}             % taller vert bars for the norm
+\newcommand{\evalat}[1]
+        {\left. #1 \right \vert}        % ex. evaluating the int. at its limits
+\newcommand{\set}[1]
+        {\left\{ #1 \right\}}           % squigle brackets for sets
+\newcommand{\avg}[1]
+        {\left< #1 \right>}		% angle brackets for averages < >
+\newcommand{\paren}[1]
+        {\left( #1 \right)}		% grows parentheses () 
+\newcommand{\brackets}[1]
+        {\left[ #1 \right]}		% grows square brackets []
+\newcommand{\braces}[1]
+        {\left \{ #1 \right \}}         % grows curly brackets {}
+\newcommand{\piecewisebrace}[1]
+        {\left \{ #1 \right .}          % piecewisebrace
+
+% Shorthand with proper spacing
+\newcommand{\viz}{viz.\ }
+\newcommand{\ie}{i.e.\ }
+\newcommand{\eg}{e.g.\ }
+\newcommand{\cf}{c.f.\ }
+
+% Chemical formula
+\newcommand{\chem}[1]{\ensuremath{\mathrm{#1}}} 
+
+% New math operators
+\DeclareMathOperator*{\minor}{minor\,}
+\DeclareMathOperator*{\sgn}{\mathbf{sgn}\, }
+\DeclareMathOperator*{\rootof}{RootOf\,}
+
+% Vector notation
+\newcommand{\mathvect}[1]{\boldsymbol{#1}}
+\newcommand{\vect}[1]{\mathbf{#1}}
+
+% Differential used at the end of an integral
+\newcommand*\diff{\mathop{}\!\mathrm{d}}
+\newcommand{\integral}[2]{\int #1\diff#2}

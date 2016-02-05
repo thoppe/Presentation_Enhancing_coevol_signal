@@ -1,0 +1,260 @@
+\documentclass[landscape]{sciposter}
+%\documentclass[landscape,draft]{sciposter}
+\usepackage[]{graphicx}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{units}
+\usepackage{authoraftertitle}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{charter}
+\usepackage[expert]{mathdesign}
+%\usepackage{fancyhdr}
+%\usepackage{etoolbox}
+%\renewcommand{\familydefault}{\rmdefault}
+
+\usepackage{multicol}
+\usepackage{url}
+
+% Set the lengths of the pictures
+\newlength{\customfigwidth}
+\setlength{\customfigwidth}{16cm}
+
+\setlength{\belowdisplayskip}{10pt} \setlength{\belowdisplayshortskip}{10pt}
+\setlength{\abovedisplayskip}{10pt} \setlength{\abovedisplayshortskip}{10pt}
+\setlength{\columnseprule}{4pt}
+\setlength{\multicolsep}{6.0pt plus 2.0pt minus 1.5pt}% 50% of original values
+\setlength\columnsep{40pt}% 50% of original values
+
+\newcommand{\eqnote}[1]{{\scriptsize#1}}
+
+
+\usepackage[font={large,it}]{caption}
+\usepackage[protrusion=true,expansion=true]{microtype}
+
+\input{convenience_func.tex}
+\input{eqs.tex}
+
+%\definecolor{BoxCol}{rgb}{.93531, .93531, .93531}
+%\definecolor{palered}{RGB}{255,182,182}
+
+
+\newcommand{\titlefont}[1]{%
+  {%
+  \usefont{T1}{bch}{b}{n}%
+    \selectfont%
+    #1%
+  }%
+  \normalfont%
+}
+
+\newcommand{\at}{\makeatletter\titlefont{@}\makeatother}
+
+
+\author{Travis Hoppe, Robert Best}
+\email{hoppeta@mail.nih.gov}
+\institute{National Institutes of Health, National Institute of Diabetes and Digestive and Kidney Diseases}
+\conference{\titlefont{\large Biophysical Society Meeting 2016, Los Angeles CA}}
+
+\renewcommand{\sectionsize}{%
+  \usefont{T1}{bch}{b}{n}%
+  \scshape%
+  \bfseries%
+  \large
+  \selectfont%
+}
+ 
+\begin{document}
+
+% Custom footer
+\renewcommand{\footlogo}{%
+  \resizebox{2\logowidth}{!}{%
+    \includegraphics[height = 1cm]{logos/NIDDK_logo.pdf}%
+    \hspace{1em}
+    \includegraphics[height = 1cm]{logos/dhhs_logo.pdf}%
+    \hspace{1em}
+    \includegraphics[height = 1cm]{logos/NIH_Logo.pdf}
+  }
+}
+
+% Custom title
+%\maketitle
+\resizebox{\textwidth}{!}{
+  \begin{tabular}{ p{.6\textwidth} r }
+    \titlefont{\Huge  ENHANCING THE COEVOLUTIONARY SIGNAL }  &
+    \titlefont{\Large \MyAuthor} \\
+    %& 
+    \titlefont{\Huge }&
+    %\includegraphics[height = 1cm]{mail.png}
+    \texttt{hoppeta}{\bfseries \at}\texttt{mail.nih.gov}
+    %&
+  \end{tabular}
+}
+\vspace{1cm}
+
+
+\begin{multicols}{3}
+
+\begin{abstract}
+Effective coarse-grained representations of protein-protein interaction potentials are vital in the modeling of large scale systems.
+We develop a method to fit an arbitrary number of effective charges to approximate the electrostatic potential of a protein at a given pH in an ionic solution.
+We find that the effective charges can reproduce an input potential calculated from a high resolution Poisson-Boltzmann calculation. 
+The fitting procedure uses a number of approximations in the charge magnitudes, initial conditions and multipoles to speed convergence.
+The most significant gains are found by fitting the multipole moments of the effective charge potential to the moments of the original field.
+We compute interaction energies and find excellent agreement to the original potential.
+From the effective charge model we compute the electrostatic contribution to the second virial coefficient.
+\end{abstract}
+
+\columnbreak
+
+\section*{Methods}
+%
+Calculate the electrostatic potential from the non-linear Poisson-Boltzmann equation
+\begin{equation}
+  \label{eq:poisson_boltzmann}
+  -\nabla \cdot \epsilon( \vect{r} ) \nabla \Psi (\vect{r}) + 
+  \kappa^2 \sinh \Psi (\vect{r}) 
+  = \rho(\vect{r})
+\end{equation}
+\eqnote{with $\Psi$ as the potential, $\rho$ as the charge density and $\kappa$ as the inverse Debye length. Calculated with APBS.}
+\vspace{.1em}
+
+Approximate the potential as an expansion of a screened electrostatic potential and truncate the series to a finite order $\LMAX$
+\begin{equation}
+  \label{eq:yukawa_coeff}
+  \Psi( \vect{r} ) = 
+  \sum_{\ell=0}^{\LMAX} \sum_{m=-\ell}^{\ell}
+  \alpha_{\ell m} \sphericalBesselKN(\kappa r) Y_{\ell m} (\theta, \phi)
+\end{equation}
+\eqnote{Where $Y_{\ell,m}$, $\sphericalBesselIN$, $\sphericalBesselKN$ are the spherical harmonics and the modified spherical Bessel functions.}
+\vspace{.1em}
+
+The multipole coefficients $\alpha$ are defined as a sum over the locations of the charges
+\section*{Methods cont.}
+\vspace{-1em}
+
+\begin{equation}
+  \label{eq:yukawa_coeff_inv}
+  \alpha_{\ell m} = 8 \kappa \sum_{\vect{r}_i=(r'_i,\theta'_i,\phi'_i)}^N
+  q_i \sphericalBesselIN_\ell(\kappa r'_i) Y_{\ell, -m}(\theta'_i, \phi'_i)
+\end{equation}
+\eqnote{valid for all points outside a spherical shell enclosing the charges}
+\vspace{.1em}
+
+Find a set of $N$ effective charges that reproduce $\Psi$ from a pairwise Yukawa potential $\Phi$
+\begin{equation}
+  \label{eq:yukawa}
+  \Phi(\vect{r}) = \sum_{i, j \neq i}^N
+  q_i 
+  \frac
+  {e^{-\kappa \normdiff{r}}}
+  {\normdiff{r}}
+\end{equation}
+
+Instead of fitting $\Psi \rightarrow \Phi$, calculate the multipole coefficients of the effective charges and fit those to the multipole coefficients of the original field. For a complete description along with references please see attached paper.
+
+
+%\columnbreak
+
+%\renewcommand{\refname}{} 
+%\bibliographystyle{plain}  % enter bibligraphy as usual, with or without using
+%\small                     
+%\bibliography{../bib/AnisoChargeFits.bib} 
+
+
+%\renewcommand{\refname}{xxx} 
+%\begin{sectionbox}{}  
+% changes section heading over bibliography
+%\bibliographystyle{unsrt}
+%\bibliography{../bib/AnisoChargeFits.bib}
+%\end{sectionbox}
+
+\end{multicols}
+
+
+\begin{multicols}{3}
+
+  \section*{Human Serum Albumin}
+
+%
+\vfill
+\columnbreak
+
+
+\section*{Ovalbumin}
+%
+
+%
+\vfill
+\columnbreak
+\section*{Lysozme}
+%
+
+
+%
+\vfill
+\end{multicols}
+
+\begin{multicols}{3}
+
+  a
+
+  \columnbreak
+
+  b
+
+  \columnbreak
+
+  c
+
+\end{multicols}
+
+
+
+\begin{multicols}{3}
+
+
+\section*{Effective Charge Fit Quality}
+%
+
+%
+\vfill
+\columnbreak
+
+\section*{Interaction Energy}
+%
+%\begin{figure}[p]
+%  \center
+%  \includegraphics[scale=1.2]
+%  {eff_vs_APBS_all-crop}
+% \caption[]{
+%   Interaction energy of two identical molecules separated by a distance of $1.%25$ protein diameters along the x-axis. 
+%Even at the isoelectric point (where monopole moment vanishes), the effective c%harges do a great job of reproducing the interaction potential.
+%The interaction energy, calculated with APBS, is shown as dashed black line. 
+%Each APBS configuration took several hours.
+%In contrast, the computational cost of the effective charge model was negligible.
+%}
+% \label{fig:interaction_energy_oval}
+%\begin{align}
+%  \notag
+%  \Delta \Delta U_{\mathvect{\phi}} =
+%  \Delta U_{\mathvect{\phi}}^{\text{complex}} -
+%  \Delta U_{\mathvect{\phi}}^{\text{p1}} -
+%  \Delta U_{\mathvect{\phi}}^{\text{p2}}
+%\end{align}
+%\end{figure}
+%
+\vfill
+\columnbreak
+
+\section*{Second Virial Coefficient $B_{22}$}
+%
+
+%
+\vfill
+\end{multicols}
+
+
+
+
+ 
+\end{document}
