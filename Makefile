@@ -20,3 +20,7 @@ build:
 
 clean:
 	rm -vf $(CLEAN_TARGETS)
+
+commit:
+	make all
+	git commit -a 

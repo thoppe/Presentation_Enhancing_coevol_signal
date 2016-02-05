@@ -80,7 +80,7 @@
 %\maketitle
 \resizebox{\textwidth}{!}{
   \begin{tabular}{ p{.6\textwidth} r }
-    \titlefont{\Huge  ENHANCING THE COEVOLUTIONARY SIGNAL }  &
+    \titlefont{\Huge  Enhancing the Coevolutionary Signal }  &
     \titlefont{\Large \MyAuthor} \\
     %& 
     \titlefont{\Huge }&
@@ -94,133 +94,49 @@
 
 \begin{multicols}{3}
 
-\begin{abstract}
-Effective coarse-grained representations of protein-protein interaction potentials are vital in the modeling of large scale systems.
-We develop a method to fit an arbitrary number of effective charges to approximate the electrostatic potential of a protein at a given pH in an ionic solution.
-We find that the effective charges can reproduce an input potential calculated from a high resolution Poisson-Boltzmann calculation. 
-The fitting procedure uses a number of approximations in the charge magnitudes, initial conditions and multipoles to speed convergence.
-The most significant gains are found by fitting the multipole moments of the effective charge potential to the moments of the original field.
-We compute interaction energies and find excellent agreement to the original potential.
-From the effective charge model we compute the electrostatic contribution to the second virial coefficient.
-\end{abstract}
-
+\section*{Abstract}
+x
 \columnbreak
 
 \section*{Methods}
-%
-Calculate the electrostatic potential from the non-linear Poisson-Boltzmann equation
-\begin{equation}
-  \label{eq:poisson_boltzmann}
-  -\nabla \cdot \epsilon( \vect{r} ) \nabla \Psi (\vect{r}) + 
-  \kappa^2 \sinh \Psi (\vect{r}) 
-  = \rho(\vect{r})
-\end{equation}
-\eqnote{with $\Psi$ as the potential, $\rho$ as the charge density and $\kappa$ as the inverse Debye length. Calculated with APBS.}
-\vspace{.1em}
+x
+\columnbreak
 
-Approximate the potential as an expansion of a screened electrostatic potential and truncate the series to a finite order $\LMAX$
-\begin{equation}
-  \label{eq:yukawa_coeff}
-  \Psi( \vect{r} ) = 
-  \sum_{\ell=0}^{\LMAX} \sum_{m=-\ell}^{\ell}
-  \alpha_{\ell m} \sphericalBesselKN(\kappa r) Y_{\ell m} (\theta, \phi)
-\end{equation}
-\eqnote{Where $Y_{\ell,m}$, $\sphericalBesselIN$, $\sphericalBesselKN$ are the spherical harmonics and the modified spherical Bessel functions.}
-\vspace{.1em}
-
-The multipole coefficients $\alpha$ are defined as a sum over the locations of the charges
-\section*{Methods cont.}
-\vspace{-1em}
-
-\begin{equation}
-  \label{eq:yukawa_coeff_inv}
-  \alpha_{\ell m} = 8 \kappa \sum_{\vect{r}_i=(r'_i,\theta'_i,\phi'_i)}^N
-  q_i \sphericalBesselIN_\ell(\kappa r'_i) Y_{\ell, -m}(\theta'_i, \phi'_i)
-\end{equation}
-\eqnote{valid for all points outside a spherical shell enclosing the charges}
-\vspace{.1em}
-
-Find a set of $N$ effective charges that reproduce $\Psi$ from a pairwise Yukawa potential $\Phi$
-\begin{equation}
-  \label{eq:yukawa}
-  \Phi(\vect{r}) = \sum_{i, j \neq i}^N
-  q_i 
-  \frac
-  {e^{-\kappa \normdiff{r}}}
-  {\normdiff{r}}
-\end{equation}
-
-Instead of fitting $\Psi \rightarrow \Phi$, calculate the multipole coefficients of the effective charges and fit those to the multipole coefficients of the original field. For a complete description along with references please see attached paper.
-
-
-%\columnbreak
-
-%\renewcommand{\refname}{} 
-%\bibliographystyle{plain}  % enter bibligraphy as usual, with or without using
-%\small                     
-%\bibliography{../bib/AnisoChargeFits.bib} 
-
-
-%\renewcommand{\refname}{xxx} 
-%\begin{sectionbox}{}  
-% changes section heading over bibliography
-%\bibliographystyle{unsrt}
-%\bibliography{../bib/AnisoChargeFits.bib}
-%\end{sectionbox}
-
+\section*{GREMLIN}
+x
 \end{multicols}
 
-
 \begin{multicols}{3}
-
-  \section*{Human Serum Albumin}
-
-%
-\vfill
+\section*{Hypothesis}
+x
 \columnbreak
 
-
-\section*{Ovalbumin}
-%
-
-%
-\vfill
+\section*{ROC Curve}
+x
 \columnbreak
-\section*{Lysozme}
-%
 
-
-%
-\vfill
+\section*{Improved Contact Maps}
+x
+\columnbreak
 \end{multicols}
 
 \begin{multicols}{3}
 
-  a
+\section*{Q-values plots}
+x
+\columnbreak
 
-  \columnbreak
+\section*{Folding improvement}
+x
+\columnbreak
 
-  b
-
-  \columnbreak
-
-  c
-
+\section*{Gauss Kernels}
+x
+\columnbreak
 \end{multicols}
 
 
 
-\begin{multicols}{3}
-
-
-\section*{Effective Charge Fit Quality}
-%
-
-%
-\vfill
-\columnbreak
-
-\section*{Interaction Energy}
 %
 %\begin{figure}[p]
 %  \center
@@ -243,18 +159,20 @@ Instead of fitting $\Psi \rightarrow \Phi$, calculate the multipole coefficients
 %\end{align}
 %\end{figure}
 %
-\vfill
-\columnbreak
-
-\section*{Second Virial Coefficient $B_{22}$}
-%
-
-%
-\vfill
-\end{multicols}
 
 
 
+%\renewcommand{\refname}{} 
+%\bibliographystyle{plain}  % enter bibligraphy as usual, with or without using
+%\small                     
+%\bibliography{../bib/AnisoChargeFits.bib} 
 
+
+%\renewcommand{\refname}{xxx} 
+%\begin{sectionbox}{}  
+% changes section heading over bibliography
+%\bibliographystyle{unsrt}
+%\bibliography{../bib/AnisoChargeFits.bib}
+%\end{sectionbox}
  
 \end{document}

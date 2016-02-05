@@ -2,3 +2,11 @@
 *.bak
 
 .render_cache
+
+
+# Tex files
+*.aux
+*.log
+
+# Don't track main poster
+biophys_poster.pdf
