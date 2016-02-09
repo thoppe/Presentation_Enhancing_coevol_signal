@@ -19,6 +19,9 @@
 \newlength{\customfigwidth}
 \setlength{\customfigwidth}{16cm}
 
+\newlength{\customfigheight}
+\setlength{\customfigheight}{12cm}
+
 \setlength{\belowdisplayskip}{10pt} \setlength{\belowdisplayshortskip}{10pt}
 \setlength{\abovedisplayskip}{10pt} \setlength{\abovedisplayshortskip}{10pt}
 \setlength{\columnseprule}{4pt}
@@ -95,7 +98,13 @@
 \begin{multicols}{3}
 
 \section*{Abstract}
-x
+Analysis of coevolutionary relationships between residue pairs in the sequences of folded proteins can yield information on which residues interact in the folded state, and hence produce a contact map based only on sequence information. 
+The distribution of contacts in folded proteins is far from random, as evident from looking at any contact map. 
+Therefore, it should be possible to use information from neighboring contacts in order to strengthen the predictive power of coevolutionary analysis. 
+Here, we show that application of a machine-learning algorithm to contact maps from analysis of evolutionary couplings significantly improves the precision of the derived contact map with a sacrifice in sensitivity, so that many more contacts can be predicted with confidence. 
+
+%Since this does not immediately guarantee that this improvement would carry over to improvements in structure prediction, we have also investigated the effect of the contact map refinements on the quality of structures predicted using a simple coarse-grained folding algorithm.
+% We again find that our contact map refinement yields structures which are closer to the experimentally determined native state, over a set of diverse protein folds.
 \columnbreak
 
 \section*{Methods}
@@ -112,26 +121,57 @@ x
 \columnbreak
 
 \section*{ROC Curve}
-x
+\begin{figure}
+    \center 
+    \includegraphics[height=\customfigheight]{figures/GREMLIN_RF_ROC-crop.pdf}%
+    \hfill%
+    \includegraphics[height=\customfigheight]{figures/GREMLIN_RF_Acc_Pre-crop.pdf}%
+\end{figure}
+
 \columnbreak
 
 \section*{Improved Contact Maps}
-x
+
+\begin{figure}
+    \center 
+    \includegraphics[height=1.25\customfigheight]{figures/1a3a_cmp.png}%
+\end{figure}
+
+
 \columnbreak
 \end{multicols}
 
 \begin{multicols}{3}
 
 \section*{Q-values plots}
-x
+\begin{figure}
+    \center 
+    \includegraphics[height=\customfigheight]{figures/folding/Q_avg.png}
+\end{figure}
+
 \columnbreak
 
 \section*{Folding improvement}
-x
+
+\begin{figure}
+    \center 
+    \hfill%
+    \includegraphics[height=\customfigheight]{figures/local_structure_distance.png}%   
+    \hfill%
+    \includegraphics[height=\customfigheight]{figures/FP_distance.png}%
+    \hfill%
+    \hspace{0em}
+\end{figure}
+
 \columnbreak
 
 \section*{Gauss Kernels}
-x
+
+\begin{figure}
+    \center 
+    \includegraphics[width=1.5\customfigwidth]{figures/avg_features.pdf}%
+\end{figure}
+
 \columnbreak
 \end{multicols}
 
