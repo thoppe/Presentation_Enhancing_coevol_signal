@@ -104,63 +104,64 @@ The distribution of contacts in folded proteins is far from random, as evident f
 Therefore, it should be possible to use information from neighboring contacts in order to strengthen the predictive power of coevolutionary analysis. 
 Here, we show that application of a machine-learning algorithm to contact maps from analysis of evolutionary couplings significantly improves the precision of the derived contact map with a sacrifice in sensitivity, so that many more contacts can be predicted with confidence. 
 
-%Since this does not immediately guarantee that this improvement would carry over to improvements in structure prediction, we have also investigated the effect of the contact map refinements on the quality of structures predicted using a simple coarse-grained folding algorithm.
-% We again find that our contact map refinement yields structures which are closer to the experimentally determined native state, over a set of diverse protein folds.
 \vfill
 \columnbreak
 
-\section*{Methods}
+\section*{Hypothesis / Motivation}
 
-Download, parse, and clean PDB.
-Build FASTA and reference contact map.
-Align each FASTA using HHBLITS*.
-Score alignments with GREMLIN.
-Build contact maps from GREMLIN.
-(optional) Optimize contact map score with RF.
-Fold coarse-grained protein from contact map.
-
-Scoring: For a given protein and alignment GREMLIN gives $(N,N,21,21)$ tensor.
-
-Reduce GREMLIN's tensor output: 
-$S_{N,N,21,21} \rightarrow S_{N,N,20,20} \rightarrow  G_{N,N} \rightarrow G^{\text{APC}}_{N,N} = g$ 
-Drop information about gaps.
-Compute the Frobenius norm over each position. Subtract average product correlation, structural vs. shared ancestry $APC(a,b) = MI(a,\overline{x}) MI(b,\overline{x}) / \overline{\text{MI}}$
-
-Protein dataset taken from PSICOV\cite{jones2012psicov}.
+In the pipeline from sequence to structure prediction, there are many places to make improvements.
+Particularly fruitful has been the incorporation of coevolutionary data, with assumption that co-mutating residues along a multiple sequence alignment have a higher probability of being in contact in three-dimensional structure.
+\vfill
+We concentrate on improving one of these models, GREMLIN\cite{kamisetty2013assessing}, though the methods should work on similar schemes like DCA and PSICOV.
+In GREMLIN the top $L$ residue pairs are chosen from a coevolutionary scoring matrix. 
+This works well for low values of $L$ but the signal-to-noise ratio drowns out the weaker contacts.
+\vfill
+We propose a straight-forward machine learning scheme to infer a contact from the \emph{local} score pattern with the physically motivated hypothesis that the presence of a high local scores are an indicator of a contact.
 
 \vfill
 \columnbreak
 
 \section*{Coevolutionary Analysis: GREMLIN\cite{kamisetty2013assessing}}
 
-
-Optimize the pseudolikelihood of $v,w$
+GREMLIN optimizes the pseudolikelihood  of a maximum entropy model that matches the observed single and pair frequencies from a multiple sequence alignment:
 
 $$ P(v,w | D) = \sum_{n=1}^N \sum_{i=1}^L \log P (x_i^n | x_{i'}^n, v, w)$$
 
 $$ P (x_i^n | x_{i'}^n, v, w) = \frac{1}{Z_i} \exp \left ( v_i(x_i^n) + \sum_{j=1,j \neq i}^L w_{ij}(x_i^n,x_j^n) \right )$$
-Models conditional distribution of the original joint distribution instead of the joint distribution itself. 
-Can add regularization to prevent overfitting and prior knowledge. 
-$v_i$ encodes individual propensity of each amino acid at position $i$ $w_{ij}$ statistical coupling of amino acid propensities between positions $i,j$
+
+$v_i$ encodes individual propensity of each amino acid at position $i$ $w_{ij}$ statistical coupling of amino acid propensities between positions $i,j$. 
+This formulation models conditional distribution of the original joint distribution instead of the joint distribution itself. 
 
 \end{multicols}
 
 \begin{multicols}{3}
-\section*{Hypothesis}
 
-RANDOM FOREST (RF) SCORE MODEL
-Machine learn local pixel maps for contact/non-contact.
-Normalize data: subtract mean, scale to unit variance.
-Train with extremely random forests*, variant with dropout.
-(e)RF's were more robust than traditional shallow learning like SVM.
+\section*{Methods}
+
+\begin{itemize}
+\setlength\itemsep{0.8em}
+\item 150 globular proteins (50-275 residues each) were selected from set of non-homologous proteins covering diverse motifs and structures.
+\item Proteins were aligned using HHBLITS.
+\item Alignments were scored using GREMLIN.
+\item Scores were reduced from the original $(N,N,21,21)$ tensor by dropping gaps, taking the Frobenius norm and applying the Average Product Correlation (APC).
+\item Using a 4-fold cross-validated scheme, ``images'' of 5x5 were taken from the training set of GREMLIN scores to predict if a true native contact was given at the center.
+\item An extremely random forest (RF) was trained over the images.
+\item Contact maps for a given cutoff were predicted from both the GREMLIN and RF models.
+\item Coarse-grained molecular dynamics simulations were performed with each contact map to test folding.
+\end{itemize}
+
+%Protein dataset taken from PSICOV %.\cite{jones2012psicov}.
+
 \vfill \columnbreak
 
-\section*{Improved Contact Maps}
+\section*{Improved Contact Map Prediction}
 
 \begin{figure}
     \center 
     \includegraphics[height=1.25\customfigheight]{figures/1a3a_cmp.png}%
-\caption{$\SI{8}{\angstrom}$  $C_\alpha$ contact map of protein 1a31 (IIA Mannitol from E. Coli) in red, original GREMLIN scoring method on the left and improved RF-GREMLIN method on the right. Using the traditional scoring method, false positives appear uniformly randomly across the contact pairs, while the RF method is more precise and accurate by concentrating local information. }
+\caption{$\SI{8}{\angstrom}$  $C_\alpha$ Left: original GREMLIN scoring method on in black; Right: improved RF-GREMLIN in black; Both: contact map of protein 1a31 (IIA Mannitol from E. Coli) in red.
+
+Using the traditional scoring method, false positives appear uniformly randomly across the contact pairs, while the RF method is more precise and accurate by concentrating local information. }
 \end{figure}
 
 \vfill \columnbreak
@@ -172,8 +173,8 @@ Train with extremely random forests*, variant with dropout.
     \hfill%
     \includegraphics[height=\customfigheight]{figures/GREMLIN_RF_Acc_Pre-crop.pdf}%
 \caption{%
-Left: Receiver operating curve, Right: Sensitivity vs. Precision.
-For any given sensitivity, RF-GREMLIN outperforms the traditional GREMLIN by choosing more correct contacts.
+Left: Receiver operating curve for GREMLIN and RF models; Right: same for sensitivity vs. precision. 
+For all values of the sensitivity, RF-GREMLIN outperforms the traditional GREMLIN by choosing more correct contacts.
 }
 
 \end{figure}
@@ -182,37 +183,38 @@ For any given sensitivity, RF-GREMLIN outperforms the traditional GREMLIN by cho
 
 \begin{multicols}{3}
 
-\section*{Q-values plots}
-\begin{figure}
-    \center 
-    \includegraphics[height=1.5\customfigheight]{figures/folding/Q_avg.png}
-
-\caption{
-Folding simulations
-$C_\alpha$ coarse-grained MD simulation
-Unbiased estimate of contact map $\rightarrow$ fold.
-No prior knowledge (ROSETTA fragments, SS predictions., etc...).
-Potential = Backbone + smoothed well with range ~ $\SI{8}{\angstrom}$.
-}
-\end{figure}
-
-\vfill \columnbreak
-
 \section*{Contact improvement is localized}
 
 \begin{figure}
     \center 
     \hfill%
-    \includegraphics[height=\customfigheight]{figures/local_structure_distance.png}%   
+    \includegraphics[height=1.2\customfigheight]{figures/local_structure_distance.png}%   
     \hfill%
-    \includegraphics[height=\customfigheight]{figures/FP_distance.png}%
+    \includegraphics[height=1.2\customfigheight]{figures/FP_distance.png}%
     \hfill%
     \hspace{0em}
 
 \caption{%
-Both methods give false positive results, but the predictions by RF-GREMLIN were correlated to the true positives. We measured the average city-block (L1-norm) distance from each false positive to the nearest true positive averaged all protein datasets. Left: diagrammatic illustration of a false positive (FP) to true positive (TP) distance of three. Right: Averaged L1 distance for all FP to TP across the dataset.
+Both methods give false positive (FP), but the predictions by the RF were closer to the TP in contact map space.
+We measured the average city-block (L1-norm) distance from each FP to the nearest TP averaged all proteins contact maps predicted. 
+Left: diagrammatic illustration of a FP to a TP, showing a distance of three. Right: Averaged L1 distance for all FPs to TPs across the dataset.
 }
 \end{figure}
+
+\vfill \columnbreak
+
+\section*{Folding simulations}
+\begin{figure}
+    \center 
+    \includegraphics[height=1.25\customfigheight]{figures/folding/Q_avg.png}
+
+\caption{
+To test the efficacy of the contact maps as a tool to predict the native fold of a protein (without any other prior knowledge) we employed a coarse-grained molecular-dynamics simulation. 
+Each residue was modeled by a single $C_\alpha$ atom with a standard backbone potential and an attractive component if two residues were predicted to be in contact.
+Plotted are the fraction of true native contacts after folding.
+}
+\end{figure}
+
 
 \vfill \columnbreak
 
@@ -220,14 +222,13 @@ Both methods give false positive results, but the predictions by RF-GREMLIN were
 
 \begin{figure}
     \center 
-    \includegraphics[width=1.5\customfigwidth]{figures/avg_features-crop.pdf}%
+    \includegraphics[width=1.25\customfigwidth]{figures/avg_features-crop.pdf}%
 \caption{
-Singular value decomposition of RF terminal leaf nodes to illustrate feature selection. The dominant features ($V_1, V_2$) are roughly described by a Gaussian kernel and the difference between the center and the outlying values.
+To illustrate feature selection of the model, we perform singular value decomposition of terminal leaf nodes from the random forests. The dominant features ($V_1, V_2$) are roughly described by a Gaussian kernel and the difference between the center and the outlying values.
 }
 \end{figure}
 
-
-\renewcommand{\refname}{} 
+%\renewcommand{\refname}{} 
 \bibliographystyle{unsrt}
 %\bibliographystyle{plain}  % enter bibligraphy as usual, with or without using
 \small                     

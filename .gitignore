@@ -10,3 +10,7 @@
 
 # Don't track main poster
 biophys_poster.pdf
+
+*.bbl
+*.bcf
+*.blg
