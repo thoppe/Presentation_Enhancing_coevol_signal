@@ -4,7 +4,7 @@ CLEAN_TARGETS = *.log *.aux *~ $(name).pdf *.bbl *.blg
 all:
 	aspell check -t $(name).tex
 	make build
-#	make bibliography
+	make bibliography
 	make build
 	evince $(name).pdf
 

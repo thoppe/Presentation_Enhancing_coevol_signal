@@ -8,6 +8,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{charter}
 \usepackage[expert]{mathdesign}
+\usepackage{siunitx}
 %\usepackage{fancyhdr}
 %\usepackage{etoolbox}
 %\renewcommand{\familydefault}{\rmdefault}
@@ -86,7 +87,7 @@
     \titlefont{\Huge  Enhancing the Coevolutionary Signal }  &
     \titlefont{\Large \MyAuthor} \\
     %& 
-    \titlefont{\Huge }&
+    \titlefont{\Large via machine learning}&
     %\includegraphics[height = 1cm]{mail.png}
     \texttt{hoppeta}{\bfseries \at}\texttt{mail.nih.gov}
     %&
@@ -105,20 +106,64 @@ Here, we show that application of a machine-learning algorithm to contact maps f
 
 %Since this does not immediately guarantee that this improvement would carry over to improvements in structure prediction, we have also investigated the effect of the contact map refinements on the quality of structures predicted using a simple coarse-grained folding algorithm.
 % We again find that our contact map refinement yields structures which are closer to the experimentally determined native state, over a set of diverse protein folds.
+\vfill
 \columnbreak
 
 \section*{Methods}
-x
+
+Download, parse, and clean PDB.
+Build FASTA and reference contact map.
+Align each FASTA using HHBLITS*.
+Score alignments with GREMLIN.
+Build contact maps from GREMLIN.
+(optional) Optimize contact map score with RF.
+Fold coarse-grained protein from contact map.
+
+Scoring: For a given protein and alignment GREMLIN gives $(N,N,21,21)$ tensor.
+
+Reduce GREMLIN's tensor output: 
+$S_{N,N,21,21} \rightarrow S_{N,N,20,20} \rightarrow  G_{N,N} \rightarrow G^{\text{APC}}_{N,N} = g$ 
+Drop information about gaps.
+Compute the Frobenius norm over each position. Subtract average product correlation, structural vs. shared ancestry $APC(a,b) = MI(a,\overline{x}) MI(b,\overline{x}) / \overline{\text{MI}}$
+
+Protein dataset taken from PSICOV\cite{jones2012psicov}.
+
+\vfill
 \columnbreak
 
-\section*{GREMLIN}
-x
+\section*{Coevolutionary Analysis: GREMLIN\cite{kamisetty2013assessing}}
+
+
+Optimize the pseudolikelihood of $v,w$
+
+$$ P(v,w | D) = \sum_{n=1}^N \sum_{i=1}^L \log P (x_i^n | x_{i'}^n, v, w)$$
+
+$$ P (x_i^n | x_{i'}^n, v, w) = \frac{1}{Z_i} \exp \left ( v_i(x_i^n) + \sum_{j=1,j \neq i}^L w_{ij}(x_i^n,x_j^n) \right )$$
+Models conditional distribution of the original joint distribution instead of the joint distribution itself. 
+Can add regularization to prevent overfitting and prior knowledge. 
+$v_i$ encodes individual propensity of each amino acid at position $i$ $w_{ij}$ statistical coupling of amino acid propensities between positions $i,j$
+
 \end{multicols}
 
 \begin{multicols}{3}
 \section*{Hypothesis}
-x
-\columnbreak
+
+RANDOM FOREST (RF) SCORE MODEL
+Machine learn local pixel maps for contact/non-contact.
+Normalize data: subtract mean, scale to unit variance.
+Train with extremely random forests*, variant with dropout.
+(e)RF's were more robust than traditional shallow learning like SVM.
+\vfill \columnbreak
+
+\section*{Improved Contact Maps}
+
+\begin{figure}
+    \center 
+    \includegraphics[height=1.25\customfigheight]{figures/1a3a_cmp.png}%
+\caption{$\SI{8}{\angstrom}$  $C_\alpha$ contact map of protein 1a31 (IIA Mannitol from E. Coli) in red, original GREMLIN scoring method on the left and improved RF-GREMLIN method on the right. Using the traditional scoring method, false positives appear uniformly randomly across the contact pairs, while the RF method is more precise and accurate by concentrating local information. }
+\end{figure}
+
+\vfill \columnbreak
 
 \section*{ROC Curve}
 \begin{figure}
@@ -126,19 +171,13 @@ x
     \includegraphics[height=\customfigheight]{figures/GREMLIN_RF_ROC-crop.pdf}%
     \hfill%
     \includegraphics[height=\customfigheight]{figures/GREMLIN_RF_Acc_Pre-crop.pdf}%
+\caption{%
+Left: Receiver operating curve, Right: Sensitivity vs. Precision.
+For any given sensitivity, RF-GREMLIN outperforms the traditional GREMLIN by choosing more correct contacts.
+}
+
 \end{figure}
 
-\columnbreak
-
-\section*{Improved Contact Maps}
-
-\begin{figure}
-    \center 
-    \includegraphics[height=1.25\customfigheight]{figures/1a3a_cmp.png}%
-\end{figure}
-
-
-\columnbreak
 \end{multicols}
 
 \begin{multicols}{3}
@@ -146,12 +185,20 @@ x
 \section*{Q-values plots}
 \begin{figure}
     \center 
-    \includegraphics[height=\customfigheight]{figures/folding/Q_avg.png}
+    \includegraphics[height=1.5\customfigheight]{figures/folding/Q_avg.png}
+
+\caption{
+Folding simulations
+$C_\alpha$ coarse-grained MD simulation
+Unbiased estimate of contact map $\rightarrow$ fold.
+No prior knowledge (ROSETTA fragments, SS predictions., etc...).
+Potential = Backbone + smoothed well with range ~ $\SI{8}{\angstrom}$.
+}
 \end{figure}
 
-\columnbreak
+\vfill \columnbreak
 
-\section*{Folding improvement}
+\section*{Contact improvement is localized}
 
 \begin{figure}
     \center 
@@ -161,58 +208,39 @@ x
     \includegraphics[height=\customfigheight]{figures/FP_distance.png}%
     \hfill%
     \hspace{0em}
+
+\caption{%
+Both methods give false positive results, but the predictions by RF-GREMLIN were correlated to the true positives. We measured the average city-block (L1-norm) distance from each false positive to the nearest true positive averaged all protein datasets. Left: diagrammatic illustration of a false positive (FP) to true positive (TP) distance of three. Right: Averaged L1 distance for all FP to TP across the dataset.
+}
 \end{figure}
 
-\columnbreak
+\vfill \columnbreak
 
-\section*{Gauss Kernels}
+\section*{Feature selection}
 
 \begin{figure}
     \center 
-    \includegraphics[width=1.5\customfigwidth]{figures/avg_features.pdf}%
+    \includegraphics[width=1.5\customfigwidth]{figures/avg_features-crop.pdf}%
+\caption{
+Singular value decomposition of RF terminal leaf nodes to illustrate feature selection. The dominant features ($V_1, V_2$) are roughly described by a Gaussian kernel and the difference between the center and the outlying values.
+}
 \end{figure}
 
-\columnbreak
-\end{multicols}
 
-
-
-%
-%\begin{figure}[p]
-%  \center
-%  \includegraphics[scale=1.2]
-%  {eff_vs_APBS_all-crop}
-% \caption[]{
-%   Interaction energy of two identical molecules separated by a distance of $1.%25$ protein diameters along the x-axis. 
-%Even at the isoelectric point (where monopole moment vanishes), the effective c%harges do a great job of reproducing the interaction potential.
-%The interaction energy, calculated with APBS, is shown as dashed black line. 
-%Each APBS configuration took several hours.
-%In contrast, the computational cost of the effective charge model was negligible.
-%}
-% \label{fig:interaction_energy_oval}
-%\begin{align}
-%  \notag
-%  \Delta \Delta U_{\mathvect{\phi}} =
-%  \Delta U_{\mathvect{\phi}}^{\text{complex}} -
-%  \Delta U_{\mathvect{\phi}}^{\text{p1}} -
-%  \Delta U_{\mathvect{\phi}}^{\text{p2}}
-%\end{align}
-%\end{figure}
-%
-
-
-
-%\renewcommand{\refname}{} 
+\renewcommand{\refname}{} 
+\bibliographystyle{unsrt}
 %\bibliographystyle{plain}  % enter bibligraphy as usual, with or without using
-%\small                     
-%\bibliography{../bib/AnisoChargeFits.bib} 
-
+\small                     
+\bibliography{bib/CMAP.bib} 
 
 %\renewcommand{\refname}{xxx} 
 %\begin{sectionbox}{}  
 % changes section heading over bibliography
-%\bibliographystyle{unsrt}
+
 %\bibliography{../bib/AnisoChargeFits.bib}
 %\end{sectionbox}
+
+\end{multicols}
+
  
 \end{document}
