@@ -109,10 +109,10 @@ Here, we show that application of a machine-learning algorithm to contact maps f
 
 \section*{Hypothesis / Motivation}
 
-In the pipeline from sequence to structure prediction, there are many places to make improvements.
-Particularly fruitful has been the incorporation of coevolutionary data, with assumption that co-mutating residues along a multiple sequence alignment have a higher probability of being in contact in three-dimensional structure.
+In the sequence to structure prediction problem, it has been particularly fruitful to incorporate coevolutionary data.
+The assumption is that co-mutating residues in multiple sequence alignment have a higher probability of being in contact in the three-dimensional structure.
 \vfill
-We concentrate on improving one of these models, GREMLIN\cite{kamisetty2013assessing}, though the methods should work on similar schemes like DCA and PSICOV.
+We concentrate on improving one of these models, GREMLIN\cite{kamisetty2013assessing}, though the methods would work on similar schemes like DCA and PSICOV.
 In GREMLIN the top $L$ residue pairs are chosen from a coevolutionary scoring matrix. 
 This works well for low values of $L$ but the signal-to-noise ratio drowns out the weaker contacts.
 \vfill
@@ -159,9 +159,14 @@ This formulation models conditional distribution of the original joint distribut
 \begin{figure}
     \center 
     \includegraphics[height=1.25\customfigheight]{figures/1a3a_cmp.png}%
-\caption{$\SI{8}{\angstrom}$  $C_\alpha$ Left: original GREMLIN scoring method on in black; Right: improved RF-GREMLIN in black; Both: contact map of protein 1a31 (IIA Mannitol from E. Coli) in red.
+\caption{
+Both: contact map of protein 1a31 (IIA Mannitol from E. Coli) in red;
+Left: original GREMLIN scoring method on in black; 
+Right: improved RF in black.
 
-Using the traditional scoring method, false positives appear uniformly randomly across the contact pairs, while the RF method is more precise and accurate by concentrating local information. }
+Using the traditional scoring method, false positives appear uniformly randomly across the contact pairs, 
+while the RF method is more precise  by utilizing local information.
+}
 \end{figure}
 
 \vfill \columnbreak
@@ -195,8 +200,8 @@ For all values of the sensitivity, RF-GREMLIN outperforms the traditional GREMLI
     \hspace{0em}
 
 \caption{%
-Both methods give false positive (FP), but the predictions by the RF were closer to the TP in contact map space.
-We measured the average city-block (L1-norm) distance from each FP to the nearest TP averaged all proteins contact maps predicted. 
+Both methods give false positive (FP), but the predictions by the RF were closer to the true positives (TP) in contact map space.
+We measured the average city-block (L1-norm) distance from each FP to the nearest TP and averaged over all proteins contact maps predicted. 
 Left: diagrammatic illustration of a FP to a TP, showing a distance of three. Right: Averaged L1 distance for all FPs to TPs across the dataset.
 }
 \end{figure}
@@ -211,7 +216,7 @@ Left: diagrammatic illustration of a FP to a TP, showing a distance of three. Ri
 \caption{
 To test the efficacy of the contact maps as a tool to predict the native fold of a protein (without any other prior knowledge) we employed a coarse-grained molecular-dynamics simulation. 
 Each residue was modeled by a single $C_\alpha$ atom with a standard backbone potential and an attractive component if two residues were predicted to be in contact.
-Plotted are the fraction of true native contacts after folding.
+The fraction of true native contacts formed after a short folding simulation, $Q$, are plotted.
 }
 \end{figure}
 
