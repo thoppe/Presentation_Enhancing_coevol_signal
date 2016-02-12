@@ -125,7 +125,7 @@ We propose a straight-forward machine learning scheme to infer a contact from th
 
 GREMLIN optimizes the pseudolikelihood  of a maximum entropy model that matches the observed single and pair frequencies from a multiple sequence alignment:
 
-$$ P(v,w | D) = \sum_{n=1}^N \sum_{i=1}^L \log P (x_i^n | x_{i'}^n, v, w)$$
+$$ P(D | v,w) = \sum_{n=1}^N \sum_{i=1}^L \log P (x_i^n | x_{i'}^n, v, w)$$
 
 $$ P (x_i^n | x_{i'}^n, v, w) = \frac{1}{Z_i} \exp \left ( v_i(x_i^n) + \sum_{j=1,j \neq i}^L w_{ij}(x_i^n,x_j^n) \right )$$
 
@@ -140,13 +140,13 @@ This formulation models conditional distribution of the original joint distribut
 
 \begin{itemize}
 \setlength\itemsep{0.8em}
-\item 150 globular proteins (50-275 residues each) were selected from set of non-homologous proteins covering diverse motifs and structures.
-\item Proteins were aligned using HHBLITS.
+\item 150 globular proteins with known structure (50-275 residues each) were selected from set of non-homologous proteins covering diverse motifs and structures.
+\item Protein sequences were aligned using HHBLITS.
 \item Alignments were scored using GREMLIN.
 \item Scores were reduced from the original $(N,N,21,21)$ tensor by dropping gaps, taking the Frobenius norm and applying the Average Product Correlation (APC).
 \item Using a 4-fold cross-validated scheme, ``images'' of 5x5 were taken from the training set of GREMLIN scores to predict if a true native contact was given at the center.
 \item An extremely random forest (RF) was trained over the images.
-\item Contact maps for a given cutoff were predicted from both the GREMLIN and RF models.
+\item Contact maps for a given cutoff were predicted from both the GREMLIN and RF models. For reference, contact maps were also computed from the native structure.
 \item Coarse-grained molecular dynamics simulations were performed with each contact map to test folding.
 \end{itemize}
 
